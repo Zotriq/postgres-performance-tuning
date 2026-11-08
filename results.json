@@ -1,0 +1,210 @@
+{
+  "meta": {
+    "server_version": "16.15",
+    "runs": 9,
+    "orders": 2000000,
+    "customers": 200000,
+    "order_items": 3999467,
+    "products_big": 1000000
+  },
+  "results": [
+    {
+      "key": "customer_history",
+      "title": "Customer order history page",
+      "before_ms": 58.83,
+      "after_ms": 0.13,
+      "speedup": 460.2,
+      "same_result": true,
+      "before_plan": {
+        "node_types": [
+          "Gather Merge",
+          "Limit",
+          "Seq Scan",
+          "Sort"
+        ],
+        "index_names": [],
+        "rows_scanned": 2000001,
+        "shared_buffers": 16903,
+        "execution_ms": 60.646
+      },
+      "after_plan": {
+        "node_types": [
+          "Bitmap Heap Scan",
+          "Bitmap Index Scan",
+          "Limit",
+          "Sort"
+        ],
+        "index_names": [
+          "orders_customer_created_idx"
+        ],
+        "rows_scanned": 12,
+        "shared_buffers": 15,
+        "execution_ms": 0.037
+      }
+    },
+    {
+      "key": "email_login",
+      "title": "Case-insensitive email login",
+      "before_ms": 25.57,
+      "after_ms": 0.06,
+      "speedup": 402.6,
+      "same_result": true,
+      "before_plan": {
+        "node_types": [
+          "Gather",
+          "Seq Scan"
+        ],
+        "index_names": [],
+        "rows_scanned": 200000,
+        "shared_buffers": 2185,
+        "execution_ms": 32.051
+      },
+      "after_plan": {
+        "node_types": [
+          "Index Scan"
+        ],
+        "index_names": [
+          "customers_lower_email_idx"
+        ],
+        "rows_scanned": 1,
+        "shared_buffers": 4,
+        "execution_ms": 0.006
+      }
+    },
+    {
+      "key": "pending_dashboard",
+      "title": "Ops dashboard: pending orders this week",
+      "before_ms": 65.74,
+      "after_ms": 3.02,
+      "speedup": 21.8,
+      "same_result": true,
+      "before_plan": {
+        "node_types": [
+          "Gather Merge",
+          "Seq Scan",
+          "Sort"
+        ],
+        "index_names": [],
+        "rows_scanned": 2000001,
+        "shared_buffers": 16903,
+        "execution_ms": 57.887
+      },
+      "after_plan": {
+        "node_types": [
+          "Index Scan"
+        ],
+        "index_names": [
+          "orders_pending_created_idx"
+        ],
+        "rows_scanned": 1644,
+        "shared_buffers": 559,
+        "execution_ms": 0.399
+      }
+    },
+    {
+      "key": "deep_pagination",
+      "title": "Admin order list, page 10,000",
+      "before_ms": 48.33,
+      "after_ms": 0.18,
+      "speedup": 267.5,
+      "same_result": true,
+      "before_plan": {
+        "node_types": [
+          "Index Scan",
+          "Limit"
+        ],
+        "index_names": [
+          "orders_pkey"
+        ],
+        "rows_scanned": 500050,
+        "shared_buffers": 5582,
+        "execution_ms": 69.649
+      },
+      "after_plan": {
+        "node_types": [
+          "Index Scan",
+          "Limit"
+        ],
+        "index_names": [
+          "orders_pkey"
+        ],
+        "rows_scanned": 50,
+        "shared_buffers": 4,
+        "execution_ms": 0.029
+      }
+    },
+    {
+      "key": "product_search",
+      "title": "Product search box",
+      "before_ms": 232.42,
+      "after_ms": 1.76,
+      "speedup": 131.7,
+      "same_result": true,
+      "before_plan": {
+        "node_types": [
+          "Gather",
+          "Limit",
+          "Seq Scan"
+        ],
+        "index_names": [],
+        "rows_scanned": 999999,
+        "shared_buffers": 8414,
+        "execution_ms": 257.455
+      },
+      "after_plan": {
+        "node_types": [
+          "Bitmap Heap Scan",
+          "Bitmap Index Scan",
+          "Limit"
+        ],
+        "index_names": [
+          "products_big_name_trgm_idx"
+        ],
+        "rows_scanned": 3,
+        "shared_buffers": 140,
+        "execution_ms": 1.624
+      }
+    },
+    {
+      "key": "product_orders",
+      "title": "Which orders contain this product?",
+      "before_ms": 113.2,
+      "after_ms": 2.19,
+      "speedup": 51.6,
+      "same_result": true,
+      "before_plan": {
+        "node_types": [
+          "Gather Merge",
+          "Index Scan",
+          "Limit",
+          "Nested Loop",
+          "Seq Scan",
+          "Sort"
+        ],
+        "index_names": [
+          "orders_pkey"
+        ],
+        "rows_scanned": 4000001,
+        "shared_buffers": 27625,
+        "execution_ms": 104.114
+      },
+      "after_plan": {
+        "node_types": [
+          "Bitmap Heap Scan",
+          "Bitmap Index Scan",
+          "Index Scan",
+          "Limit",
+          "Nested Loop",
+          "Sort"
+        ],
+        "index_names": [
+          "order_items_product_idx",
+          "orders_pkey"
+        ],
+        "rows_scanned": 1066,
+        "shared_buffers": 2668,
+        "execution_ms": 1.786
+      }
+    }
+  ]
+}
